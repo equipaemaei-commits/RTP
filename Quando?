@@ -1,0 +1,531 @@
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia Interativo: Educação Inclusiva & RTP (DL 54/2018)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Chosen Palette: Slate (Neutrals) + Sky Blue (Primary) + Emerald Green (Success/Yes) + Rose (Alert/No) -->
+    <!-- Application Structure Plan: Dashboard/Thematic layout. Section 1 answers the user's direct question about RTP immediately. Section 2 explains the Multi-level approach with a chart. Section 3 details Universal Measures. Section 4 provides an interactive decision tree/filter based on JS data storage. This structure logically guides the user from their specific query to the broader systemic context of the source documents. -->
+    <!-- Visualization & Content Choices: 
+         1. Direct Answer Card -> Goal: Inform -> Clean Tailwind Box -> Highlights RTP rules.
+         2. Multi-level Chart -> Goal: Compar<!DOCTYPE html>
+e -> Chart.js Bar Chart -> Shows the conceptual scope of each measure level. (NO SVG used).
+         3. Measures Explorer -> Goal: Organize/Filter -> JS driven interactive list -> Helps users understand which measures need RTP. 
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+            color: #1e293b; /* slate-800 */
+        }
+        
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 40vh;
+            max-height: 400px;
+        }
+
+        .nav-link {
+            transition: all 0.2s ease-in-out;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #0ea5e9; /* sky-500 */
+            border-bottom: 2px solid #0ea5e9;
+        }
+
+        .tab-btn {
+            transition: background-color 0.2s;
+        }
+        .tab-btn.active {
+            background-color: #0ea5e9;
+            color: white;
+        }
+        
+        /* Custom scrollbar for better look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header & Navigation -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex-shrink-0 flex items-center gap-2">
+                    <span class="text-2xl">🏫</span>
+                    <span class="font-bold text-xl text-slate-800">Inclusão DL 54/2018</span>
+                </div>
+                <nav class="hidden md:flex space-x-8">
+                    <button onclick="navTo('rtp-section')" class="nav-link active font-medium text-slate-600 px-1 py-2">Sobre o RTP</button>
+                    <button onclick="navTo('niveis-section')" class="nav-link font-medium text-slate-600 px-1 py-2">Abordagem Multinível</button>
+                    <button onclick="navTo('medidas-section')" class="nav-link font-medium text-slate-600 px-1 py-2">Medidas Universais</button>
+                    <button onclick="navTo('interativo-section')" class="nav-link font-medium text-slate-600 px-1 py-2">Simulador</button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-16">
+
+        <!-- SECTION 1: Direct Answer -> O RTP -->
+        <section id="rtp-section" class="scroll-mt-24">
+            <div class="mb-6">
+                <h1 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4">Quando é que um aluno pode ter um RTP?</h1>
+                <p class="text-lg text-slate-600">Com base no Decreto-Lei n.º 54/2018 e na Lei n.º 116/2019, clarificamos o momento exato e a necessidade do Relatório Técnico-Pedagógico (RTP).</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Answer Card -->
+                <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-sky-500">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="text-3xl">📄</span>
+                        <h2 class="text-2xl font-bold text-slate-800">A Regra Geral</h2>
+                    </div>
+                    <p class="text-slate-700 text-lg leading-relaxed mb-4">
+                        Um aluno tem um RTP (Relatório Técnico-Pedagógico) quando a escola, após avaliação pela <strong>EMAEI</strong> (Equipa Multidisciplinar de Apoio à Educação Inclusiva), determina que o aluno necessita de:
+                    </p>
+                    <ul class="space-y-3 mb-4">
+                        <li class="flex items-start gap-2">
+                            <span class="text-sky-500 font-bold mt-1">✓</span>
+                            <span><strong>Medidas Seletivas</strong> (ex: percursos diferenciados, adaptações não significativas).</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-sky-500 font-bold mt-1">✓</span>
+                            <span><strong>Medidas Adicionais</strong> (ex: adaptações significativas, requerem também um PEI).</span>
+                        </li>
+                    </ul>
+                    <div class="bg-slate-50 p-4 rounded-lg text-sm text-slate-600 border border-slate-200">
+                        <strong>Processo:</strong> É proposto pelo docente, avaliado pela EMAEI, e requer a concordância dos Encarregados de Educação.
+                    </div>
+                </div>
+
+                <!-- Exception Card -->
+                <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-emerald-500">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="text-3xl">🛑</span>
+                        <h2 class="text-2xl font-bold text-slate-800">Quando NÃO precisa?</h2>
+                    </div>
+                    <p class="text-slate-700 text-lg leading-relaxed mb-4">
+                        A aplicação exclusiva de <strong>Medidas Universais</strong> <em>NÃO EXIGE</em>, por si só, a elaboração de um RTP.
+                    </p>
+                    <ul class="space-y-3 mb-4 text-slate-700">
+                        <li class="flex items-start gap-2">
+                            <span class="text-emerald-500 font-bold mt-1">➜</span>
+                            <span>As Medidas Universais (Diferenciação Pedagógica, Acomodações) são da responsabilidade do <strong>professor titular / conselho de turma</strong>.</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-emerald-500 font-bold mt-1">➜</span>
+                            <span>Apoios como o "Apoio ao Estudo" ou "Apoio Tutorial Preventivo" são registados em ata ou plano de turma, sem necessidade de RTP.</span>
+                        </li>
+                    </ul>
+                    <div class="bg-rose-50 p-4 rounded-lg text-sm text-rose-800 border border-rose-200 mt-auto">
+                        <strong>Exceção (Avaliação Externa):</strong> Se o aluno precisar de adaptações na avaliação externa (ex: leitura de enunciados, tempo suplementar) no 3º ciclo/secundário, estas devem constar num RTP, mesmo que antes só tivesse medidas universais.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: Abordagem Multinível (Chart) -->
+        <section id="niveis-section" class="scroll-mt-24 bg-white rounded-xl shadow-sm p-6 md:p-8 border border-slate-100">
+            <div class="mb-8 text-center max-w-3xl mx-auto">
+                <span class="text-4xl mb-4 block">📊</span>
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">O Continuum de Respostas (Abordagem Multinível)</h2>
+                <p class="text-slate-600">
+                    O Decreto-Lei n.º 54/2018 abandonou as categorias (ex: "NEE") para focar na resposta necessária. O quadro abaixo ilustra conceptualmente a abrangência e a formalidade de cada nível de intervenção.
+                </p>
+            </div>
+
+            <div class="flex flex-col lg:flex-row items-center gap-8">
+                <!-- Text context -->
+                <div class="w-full lg:w-1/3 space-y-4">
+                    <div class="p-4 bg-emerald-50 rounded-lg border-l-4 border-emerald-500">
+                        <h3 class="font-bold text-emerald-800">1. Universais</h3>
+                        <p class="text-sm text-emerald-700">Para <strong>todos</strong> os alunos. Mobilizadas pelo professor. Sem RTP.</p>
+                    </div>
+                    <div class="p-4 bg-sky-50 rounded-lg border-l-4 border-sky-500">
+                        <h3 class="font-bold text-sky-800">2. Seletivas</h3>
+                        <p class="text-sm text-sky-700">Para alunos com dificuldades persistentes. Intervenção da EMAEI. <strong>Requer RTP</strong>.</p>
+                    </div>
+                    <div class="p-4 bg-indigo-50 rounded-lg border-l-4 border-indigo-500">
+                        <h3 class="font-bold text-indigo-800">3. Adicionais</h3>
+                        <p class="text-sm text-indigo-700">Dificuldades graves/permanentes. <strong>Requer RTP e PEI</strong> (Programa Educativo Individual).</p>
+                    </div>
+                </div>
+                
+                <!-- Chart Container -->
+                <div class="w-full lg:w-2/3">
+                    <div class="chart-container">
+                        <canvas id="niveisChart"></canvas>
+                    </div>
+                    <p class="text-xs text-center text-slate-400 mt-2">Dados concetuais ilustrando o volume de alunos tipicamente abrangidos vs formalidade documental (RTP/PEI).</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: Medidas Universais -->
+        <section id="medidas-section" class="scroll-mt-24">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">Explorar as Medidas Universais (Art.º 8.º)</h2>
+                <p class="text-slate-600">
+                    As medidas universais correspondem às respostas educativas que a escola tem disponíveis para todos os alunos. Não exigem referenciação à EMAEI.
+                </p>
+            </div>
+
+            <!-- CSS Grid for Universal Measures -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Card 1 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition">
+                    <div class="text-3xl mb-3">🧩</div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">Diferenciação Pedagógica</h3>
+                    <p class="text-slate-600 text-sm mb-4">Adaptação das tarefas na sala de aula: finalidade, complexidade e forma de instrução.</p>
+                    <ul class="text-sm text-slate-500 space-y-1 list-disc pl-4">
+                        <li>Apoio individualizado na tarefa</li>
+                        <li>Trabalho de pares ou pequeno grupo</li>
+                        <li>Desafiar para níveis mais complexos</li>
+                    </ul>
+                </div>
+                
+                <!-- Card 2 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition">
+                    <div class="text-3xl mb-3">🪑</div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">Acomodações Curriculares</h3>
+                    <p class="text-slate-600 text-sm mb-4">Acesso ao currículo sem alterar o seu nível de exigência. Remoção de barreiras.</p>
+                    <ul class="text-sm text-slate-500 space-y-1 list-disc pl-4">
+                        <li>Sentar o aluno na fila da frente (PDAH)</li>
+                        <li>Testes faseados ou mais curtos</li>
+                        <li>Permitir consulta de apontamentos</li>
+                        <li>Tempo extra no teste</li>
+                    </ul>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition">
+                    <div class="text-3xl mb-3">🚀</div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">Enriquecimento Curricular</h3>
+                    <p class="text-slate-600 text-sm mb-4">Adição de conhecimentos e capacidades que contribuam para o Perfil do Aluno.</p>
+                    <ul class="text-sm text-slate-500 space-y-1 list-disc pl-4">
+                        <li>Clubes desportivos / artísticos</li>
+                        <li>Projetos de cidadania</li>
+                        <li>Mentorias</li>
+                    </ul>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition">
+                    <div class="text-3xl mb-3">🤝</div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">Promoção Comportamento Pró-social</h3>
+                    <p class="text-slate-600 text-sm mb-4">Desenvolvimento de competências sociais e emocionais na escola.</p>
+                    <ul class="text-sm text-slate-500 space-y-1 list-disc pl-4">
+                        <li>Apoio do SPO (Psicologia)</li>
+                        <li>Gabinete de Apoio à Saúde</li>
+                        <li>Estratégias de autodeterminação</li>
+                    </ul>
+                </div>
+
+                <!-- Card 5 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition">
+                    <div class="text-3xl mb-3">👥</div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">Apoio em Pequeno Grupo</h3>
+                    <p class="text-slate-600 text-sm mb-4">Intervenção com foco académico ou comportamental temporário.</p>
+                    <ul class="text-sm text-slate-500 space-y-1 list-disc pl-4">
+                        <li>Apoio ao Estudo (APEST)</li>
+                        <li>Coadjuvações em sala</li>
+                        <li>Apoio tutorial preventivo</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: Interactive Tool -> Does it need RTP? -->
+        <section id="interativo-section" class="scroll-mt-24 bg-slate-900 rounded-2xl p-6 md:p-10 text-white shadow-xl">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold mb-4">Ferramenta Interativa: Classificador de Medidas</h2>
+                <p class="text-slate-300">
+                    Selecione o tipo de estratégia/medida que pretende aplicar ao aluno para verificar o Nível de Intervenção e a documentação exigida (RTP).
+                </p>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-8">
+                <!-- Controls -->
+                <div class="w-full md:w-1/3 space-y-4">
+                    <label class="block text-sm font-medium text-slate-300">Filtrar por Nível:</label>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="filterMeasures('Todas')" id="btn-Todas" class="tab-btn active px-4 py-2 rounded-full bg-slate-700 text-sm font-medium hover:bg-slate-600">Todas</button>
+                        <button onclick="filterMeasures('Universal')" id="btn-Universal" class="tab-btn px-4 py-2 rounded-full bg-slate-700 text-sm font-medium hover:bg-slate-600">Universais</button>
+                        <button onclick="filterMeasures('Seletiva')" id="btn-Seletiva" class="tab-btn px-4 py-2 rounded-full bg-slate-700 text-sm font-medium hover:bg-slate-600">Seletivas</button>
+                        <button onclick="filterMeasures('Adicional')" id="btn-Adicional" class="tab-btn px-4 py-2 rounded-full bg-slate-700 text-sm font-medium hover:bg-slate-600">Adicionais</button>
+                    </div>
+
+                    <div class="mt-8 p-4 bg-slate-800 rounded-lg">
+                        <h4 class="font-bold text-sky-400 mb-2">Resumo da Pesquisa</h4>
+                        <div id="summary-stats" class="text-sm text-slate-300">
+                            Mostrando todas as estratégias.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results List -->
+                <div class="w-full md:w-2/3">
+                    <div class="bg-slate-800 rounded-xl overflow-hidden h-[400px] overflow-y-auto">
+                        <ul id="measures-list" class="divide-y divide-slate-700">
+                            <!-- Populated by JS -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 py-8 text-center">
+        <p class="text-sm">Baseado no Decreto-Lei n.º 54/2018 (Educação Inclusiva) de Portugal.<br>Aplicação gerada para visualização interativa e clarificação de conceitos.</p>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- Navigation Logic ---
+        function navTo(sectionId) {
+            document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+            
+            // Update active state
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        // --- Data Storage: Measures Database ---
+        const measuresData = [
+            { id: 1, text: "Sentar o aluno na primeira fila", type: "Acomodação Curricular", level: "Universal", needsRtp: false, icon: "🪑" },
+            { id: 2, text: "Testes faseados ou tempo suplementar (na sala de aula)", type: "Acomodação Curricular", level: "Universal", needsRtp: false, icon: "⏱️" },
+            { id: 3, text: "Apoio individualizado na execução da tarefa", type: "Diferenciação Pedagógica", level: "Universal", needsRtp: false, icon: "🧩" },
+            { id: 4, text: "Apoio ao Estudo (APEST)", type: "Apoio Pequeno Grupo", level: "Universal", needsRtp: false, icon: "📚" },
+            { id: 5, text: "Percursos Curriculares Diferenciados", type: "Via Profissionalizante/Outras", level: "Seletiva", needsRtp: true, icon: "🛣️" },
+            { id: 6, text: "Adaptações Curriculares Não Significativas", type: "Adaptação Objetivos", level: "Seletiva", needsRtp: true, icon: "✂️" },
+            { id: 7, text: "Apoio Psicopedagógico Especializado", type: "Apoio Especializado", level: "Seletiva", needsRtp: true, icon: "🧠" },
+            { id: 8, text: "Adaptações Curriculares Significativas", type: "Alteração Substancial Curriculo", level: "Adicional", needsRtp: true, requiresPei: true, icon: "⚠️" },
+            { id: 9, text: "Frequência de disciplinas em anos diferentes", type: "Flexibilidade", level: "Adicional", needsRtp: true, icon: "📅" },
+            { id: 10, text: "Programa de Tutoria Preventiva", type: "Apoio Pequeno Grupo", level: "Universal", needsRtp: false, icon: "🤝" },
+            { id: 11, text: "Leitura orientada de enunciados (Avaliação Externa)", type: "Adaptação Avaliação", level: "Universal/Seletiva", needsRtp: true, note: "Exceção: Requer RTP para JNE", icon: "📢" }
+        ];
+
+        // --- Render List Logic ---
+        function renderMeasuresList(data) {
+            const listEl = document.getElementById('measures-list');
+            listEl.innerHTML = ''; // Clear
+
+            if (data.length === 0) {
+                listEl.innerHTML = '<li class="p-6 text-center text-slate-500">Nenhuma medida encontrada.</li>';
+                return;
+            }
+
+            data.forEach(item => {
+                const rtpBadge = item.needsRtp 
+                    ? `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-rose-100 text-rose-800">RTP Obrigatório</span>`
+                    : `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">Sem necessidade de RTP</span>`;
+                
+                const noteHtml = item.note ? `<p class="mt-2 text-xs text-amber-400 italic">${item.note}</p>` : '';
+                const peiHtml = item.requiresPei ? `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800 ml-2">+ Requer PEI</span>` : '';
+
+                const li = document.createElement('li');
+                li.className = 'p-4 hover:bg-slate-700/50 transition duration-150';
+                li.innerHTML = `
+                    <div class="flex items-start justify-between">
+                        <div class="flex gap-3">
+                            <span class="text-2xl">${item.icon}</span>
+                            <div>
+                                <p class="text-sm font-medium text-white">${item.text}</p>
+                                <p class="text-xs text-slate-400 mt-1">${item.level} • ${item.type}</p>
+                                ${noteHtml}
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-end gap-1 shrink-0 ml-4">
+                            ${rtpBadge}
+                            ${peiHtml}
+                        </div>
+                    </div>
+                `;
+                listEl.appendChild(li);
+            });
+        }
+
+        // --- Filter Logic ---
+        function filterMeasures(level) {
+            // Update buttons visually
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-sky-500', 'text-white');
+                btn.classList.add('bg-slate-700', 'text-slate-300');
+            });
+            
+            const activeBtn = document.getElementById(`btn-${level}`);
+            activeBtn.classList.remove('bg-slate-700', 'text-slate-300');
+            activeBtn.classList.add('active', 'bg-sky-500', 'text-white');
+
+            // Filter data
+            let filteredData = measuresData;
+            if (level !== 'Todas') {
+                filteredData = measuresData.filter(item => item.level.includes(level));
+            }
+
+            // Update Summary
+            const rtpCount = filteredData.filter(i => i.needsRtp).length;
+            const noRtpCount = filteredData.length - rtpCount;
+            document.getElementById('summary-stats').innerHTML = `
+                Exibindo <strong>${filteredData.length}</strong> medidas.<br>
+                <span class="text-rose-400">${rtpCount} requerem RTP.</span><br>
+                <span class="text-emerald-400">${noRtpCount} NÃO requerem RTP.</span>
+            `;
+
+            renderMeasuresList(filteredData);
+        }
+
+        // --- Chart.js Implementation ---
+        function initChart() {
+            const ctx = document.getElementById('niveisChart').getContext('2d');
+            
+            // Conceptual data for visualization purposes
+            // X-axis: Nível
+            // Y-axis 1: Volume Conceptual de Alunos Abrangidos (Barra)
+            // Y-axis 2: Nível de Burocracia/Formalidade (Linha)
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['1. Universais', '2. Seletivas', '3. Adicionais'],
+                    datasets: [
+                        {
+                            type: 'bar',
+                            label: '% de Alunos (Conceptual)',
+                            data: [100, 30, 5],
+                            backgroundColor: [
+                                'rgba(16, 185, 129, 0.7)', // emerald
+                                'rgba(14, 165, 233, 0.7)', // sky
+                                'rgba(99, 102, 241, 0.7)'  // indigo
+                            ],
+                            borderColor: [
+                                'rgb(16, 185, 129)',
+                                'rgb(14, 165, 233)',
+                                'rgb(99, 102, 241)'
+                            ],
+                            borderWidth: 1,
+                            borderRadius: 4,
+                            yAxisID: 'y'
+                        },
+                        {
+                            type: 'line',
+                            label: 'Formalidade Documental (0-10)',
+                            data: [1, 7, 10], // Universais(1)=Ata, Seletivas(7)=RTP, Adicionais(10)=RTP+PEI
+                            borderColor: 'rgb(244, 63, 94)', // rose
+                            backgroundColor: 'rgba(244, 63, 94, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 6,
+                            pointBackgroundColor: 'white',
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                font: {
+                                    family: "'Segoe UI', sans-serif"
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.datasetIndex === 0) {
+                                        label += context.parsed.y + '% (Toda a escola)';
+                                    } else {
+                                        if(context.parsed.y === 1) label += 'Apenas Ata/Registo';
+                                        if(context.parsed.y === 7) label += 'Exige RTP';
+                                        if(context.parsed.y === 10) label += 'Exige RTP + PEI';
+                                    }
+                                    
+                                    // 16-char logic standard constraint check (wrapped artificially if needed, though ChartJS handles spaces naturally here)
+                                    if(label.length > 50) {
+                                        return label.match(/.{1,50}(\s|$)/g);
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Abrangência (População Estudantil)'
+                            },
+                            grid: {
+                                color: 'rgba(0,0,0,0.05)'
+                            }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: 'Complexidade (Exigência de RTP)'
+                            },
+                            min: 0,
+                            max: 12,
+                            grid: {
+                                drawOnChartArea: false, 
+                            },
+                            ticks: {
+                                display: false // hide numbers, meaning is contextual
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            initChart();
+            filterMeasures('Todas'); // Init list
+        });
+    </script>
+</body>
+</html>
